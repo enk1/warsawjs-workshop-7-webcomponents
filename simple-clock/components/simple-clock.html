@@ -10,6 +10,12 @@
         .container.red {
             background: red;
         }
+        .container.bule {
+            background: blueviolet;
+        }
+        .container.green {
+            background: greenyellow;
+        }
         .clock {
             font-family: Arial, Helvetica, sans-serif;
             line-height: 100px;
@@ -18,7 +24,7 @@
         }
     </style>
     <div class="container">
-        <div class="clock" time="12:00:00">00:00:00</div>
+        <div class="clock" id="clock" time="12:00:00">00:00:00</div>
     </div>
 </template>
 <script>
@@ -27,7 +33,7 @@
             super();
             //this.shadow = window.customElements.define.attachShadow({mode: 'open'});
             this.shadow = this.attachShadow({mode: 'open'});
-            console.log("my clock");
+            console.log("constructor");
         }
 
         static get observedAttributes() {
@@ -36,10 +42,11 @@
 
         connectedCallback() {
             const importDocument = document.currentScript.ownerDocument;
-            const template = importDocument.querySelector('template').content.cloneNode(true);
+            let template = importDocument.querySelector('template').content.cloneNode(true);
             this.shadow.appendChild(template);
             this.$container = this.shadow.querySelector('.container');
-            this.$clock = this.shadow.querySelector('.clock');
+            //this.$clock = this.shadow.querySelector('.clock');
+            this.$clock = this.shadow.querySelector('#clock');
             this.runClock();
         }
         runClock() {
