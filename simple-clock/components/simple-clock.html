@@ -33,7 +33,7 @@
             super();
             //this.shadow = window.customElements.define.attachShadow({mode: 'open'});
             this.shadow = this.attachShadow({mode: 'open'});
-            console.log("constructor");
+            console.log("constructor: clock");
         }
 
         static get observedAttributes() {
@@ -41,13 +41,17 @@
         }
 
         connectedCallback() {
+            this.alarmTime;
             const importDocument = document.currentScript.ownerDocument;
             let template = importDocument.querySelector('template').content.cloneNode(true);
             this.shadow.appendChild(template);
             this.$container = this.shadow.querySelector('.container');
-            //this.$clock = this.shadow.querySelector('.clock');
-            this.$clock = this.shadow.querySelector('#clock');
+            this.$clock = this.shadow.querySelector('.clock');
             this.runClock();
+            this.setAlarm("15:25:38");
+        }
+        updateTheme(newValue) {
+            this.$container.className = "container " + newValue;
         }
         runClock() {
             setInterval(() => {
@@ -57,10 +61,17 @@
             }, 1000);
         }
         setClock(time) {
+            this.checkAlarm(time);
             this.$clock.innerHTML = time;
         }
-        updateTheme(newValue) {
-            this.$container.className = "container " + newValue;
+        setAlarm(alarmTime) {
+            this.alarmTime = alarmTime;
+            console.log("alarm time: " + this.alarmTime);          
+        }
+        checkAlarm(time){
+             if(this.alarmTime === time) {
+                this.updateTheme("red");
+            }
         }
         attributeChangedCallback(attribute, oldValue, newValue) {
             if(attribute === "theme") {

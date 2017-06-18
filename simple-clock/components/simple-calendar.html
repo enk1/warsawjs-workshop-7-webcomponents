@@ -1,0 +1,73 @@
+<template>
+    <style>
+        .aside {
+            margin: 0 auto;
+            padding: 0;
+            width: 25%;
+            height: 100px;
+            background: blue;
+            color: white;
+        }
+
+        .aside.red {
+            background: red;
+        }
+
+        .aside.bule {
+            background: blueviolet;
+        }
+
+        .aside.green {
+            background: greenyellow;
+        }
+
+        .calendar {
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 100px;
+            font-size: 60px;
+            text-align: center;
+        }
+    </style>
+    <div class="aside">
+        <div class="calendar" date="01:01:2017">01:01:2017</div>
+    </div>
+</template>
+<script>
+    class SimpleCalendar extends HTMLElement {
+        constructor(args) {
+            super();
+            this.shadow = this.attachShadow({
+                mode: 'open'
+            });
+            console.log("constructor: calendar");
+        }
+
+        static get observedAttributes() {
+            return ["theme"];
+        }
+
+        connectedCallback() {
+            const importDocument = document.currentScript.ownerDocument;
+            let template = importDocument.querySelector('template').content.cloneNode(true);
+            this.shadow.appendChild(template);
+            this.$aside = this.shadow.querySelector('.aside');
+            this.$calendar = this.shadow.querySelector('.calendar');
+            this.runCalendar();
+        }
+        runCalendar() {
+            let date = new Date;
+            this.$calendar.innerHTML = date.toLocaleDateString();
+        }
+
+        updateTheme(newValue) {
+            this.$aside.className = "aside " + newValue;
+        }
+        attributeChangedCallback(attribute, oldValue, newValue) {
+            if (attribute === "theme") {
+                this.updateTheme(newValue);
+            }
+        }
+    }
+    //rejestracja w shadow-dom
+    window.customElements.define('simple-calendar', SimpleCalendar);
+</script>
